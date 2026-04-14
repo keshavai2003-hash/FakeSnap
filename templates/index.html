@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FakeSnap - Fake News Detector</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="nav-logo">🔍 Fake<span>Snap</span></div>
+    <div class="nav-links">
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('dashboard') }}" class="nav-btn">Dashboard</a>
+            {% if current_user.role == 'admin' %}
+            <a href="{{ url_for('admin') }}" class="nav-btn admin">Admin</a>
+            {% endif %}
+            <a href="{{ url_for('logout') }}" class="nav-btn logout">Logout</a>
+        {% else %}
+            <a href="{{ url_for('login') }}" class="nav-btn">Login</a>
+            <a href="{{ url_for('register') }}" class="nav-btn register">Register</a>
+        {% endif %}
+    </div>
+</nav>
+
+<!-- HEADER -->
+<div class="header">
+    <div class="logo">🔍 <span id="typed-text"></span><span class="cursor">|</span></div>
+    <p class="tagline">AI-Powered Fake News Detector — International & Indian News</p>
+    {% if current_user.is_authenticated %}
+<div class="welcome-banner">
+    <p class="welcome-greeting" id="greeting-text">Good Morning</p>
+    <p class="welcome-name">{{ current_user.username }}</p>
+</div>
+{% endif %}
+</div>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+    <div class="stat-item">
+        <div class="stat-number">100,981</div>
+        <div class="stat-label">Articles Trained</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-number">95.35%</div>
+        <div class="stat-label">Model Accuracy</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-number">2</div>
+        <div class="stat-label">Datasets Used</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-number" id="stat-checked">0</div>
+        <div class="stat-label">News Checked</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-number" id="stat-fake">0</div>
+        <div class="stat-label">Fake News Caught</div>
+    </div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+    <div class="card">
+        <h2>📰 Enter News to Analyze</h2>
+
+        {% if not current_user.is_authenticated %}
+        <div class="guest-warning">
+            ⚠️ You are using FakeSnap as a guest. <a href="{{ url_for('register') }}">Register</a> or <a href="{{ url_for('login') }}">Login</a> to track your history and earn badges!
+        </div>
+        {% endif %}
+
+        <textarea id="news-text" placeholder="Paste news article or headline here..."></textarea>
+
+        <div class="divider">OR</div>
+
+        <div class="upload-area" id="upload-area" onclick="document.getElementById('image-input').click()">
+            📷 Click to upload news image or screenshot
+        </div>
+        <input type="file" id="image-input" accept="image/*" onchange="previewImage(event)">
+
+        <div id="preview-container">
+            <img id="preview-img" src="" alt="Preview">
+            <button class="remove-btn" onclick="removeImage()">✕</button>
+        </div>
+
+        <button class="btn" onclick="predict()">🔍 ANALYZE NEWS</button>
+    </div>
+
+    <!-- ERROR -->
+    <div class="error-msg" id="error-msg"></div>
+
+    <!-- LOADING -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Analyzing news with AI... please wait</p>
+    </div>
+
+    <!-- RESULT -->
+    <div class="result-card" id="result-card">
+        <div class="result-label" id="result-label"></div>
+
+        <div class="model-info">
+            <div class="model-badge">Verdict: <span id="ml-verdict"></span></div>
+            <div class="model-badge">Trained on: <span>100,981 articles</span></div>
+            <div class="model-badge">Accuracy: <span>95.35%</span></div>
+        </div>
+
+        <div class="result-divider"></div>
+
+        <div class="extracted-text">
+            <strong>📝 Analyzed Text:</strong><br>
+            <span id="extracted-text"></span>
+        </div>
+
+        <div class="keywords">
+            <h3>🔍 Keywords Detected</h3>
+            <div id="keywords-display"></div>
+        </div>
+
+        <div class="graph-section" id="graph-section">
+            <h3>📊 Analysis Breakdown</h3>
+            <div class="graph-bar">
+                <div class="graph-label">
+                    <span>🔴 Fake Probability</span>
+                    <span id="fake-percent" style="color:#ff4444"></span>
+                </div>
+                <div class="graph-track">
+                    <div class="graph-fill graph-fill-fake" id="fake-bar"></div>
+                </div>
+            </div>
+            <div class="graph-bar">
+                <div class="graph-label">
+                    <span>🟢 Real Probability</span>
+                    <span id="real-percent" style="color:#44ff88"></span>
+                </div>
+                <div class="graph-track">
+                    <div class="graph-fill graph-fill-real" id="real-bar"></div>
+                </div>
+            </div>
+            <div class="reason-box" id="reason-box"></div>
+        </div>
+
+        <div class="disclaimer">
+            ⚠️ This is an AI-powered prediction. Always verify news from trusted sources before sharing.
+        </div>
+    </div>
+</div>
+
+<!-- ABOUT SECTION -->
+<div class="about-section" id="about">
+    <div class="container">
+        <h2 class="section-title">About FakeSnap</h2>
+
+        <div class="accordion">
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    🎯 Our Mission <span class="accordion-icon">+</span>
+                </div>
+                <div class="accordion-body">
+                    FakeSnap is built to fight misinformation in the digital age. Our mission is to provide everyone with a free, fast, and reliable tool to verify news before sharing it. We believe that truth matters and that technology can help people make informed decisions.
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    ⚙️ How It Works <span class="accordion-icon">+</span>
+                </div>
+                <div class="accordion-body">
+                    <div class="how-steps">
+                        <div class="how-step"><span>1</span> You enter a news article or upload an image</div>
+                        <div class="how-step"><span>2</span> Our ML model analyzes the writing patterns</div>
+                        <div class="how-step"><span>3</span> AI fact-checker verifies the content</div>
+                        <div class="how-step"><span>4</span> You get a REAL, FAKE, or SUSPICIOUS verdict</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    🧠 How Model Was Trained <span class="accordion-icon">+</span>
+                </div>
+                <div class="accordion-body">
+                    Our model was trained on 100,981 verified news articles from ISOT and IFND datasets covering international and Indian news. We used TF-IDF vectorization with bigrams and Logistic Regression achieving 95.35% accuracy.
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    💻 Technology Stack <span class="accordion-icon">+</span>
+                </div>
+                <div class="accordion-body">
+                    FakeSnap is built using Python, Flask, Scikit-learn, NLTK, Pytesseract for OCR, Groq AI for fact-checking, MySQL for database, and a custom HTML/CSS/JS frontend.
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    👨‍💻 About The Team <span class="accordion-icon">+</span>
+                </div>
+                <div class="accordion-body">
+                    FakeSnap is developed as a college major project by a passionate developer focused on fighting misinformation using AI and machine learning technologies.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CONTACT SECTION -->
+<div class="contact-section" id="contact">
+    <div class="container">
+        <h2 class="section-title">Contact Us</h2>
+        <div class="contact-card">
+            <div class="contact-input-group">
+                <input type="text" id="contact-name" placeholder="Your Name">
+            </div>
+            <div class="contact-input-group">
+                <input type="email" id="contact-email" placeholder="Your Email">
+            </div>
+            <div class="contact-input-group">
+                <textarea id="contact-message" placeholder="Your Message"></textarea>
+            </div>
+            <button class="btn" onclick="sendContact()">📩 Send Message</button>
+            <div id="contact-status"></div>
+        </div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-logo">🔍 Fake<span>Snap</span></div>
+    <p>AI-Powered Fake News Detector — Fighting Misinformation</p>
+    <p class="footer-copy">© 2024 FakeSnap. All rights reserved.</p>
+</footer>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

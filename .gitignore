@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Environment variables
+.env
+
+# Virtual environment
+venv/
+env/
+
+# Model files
+*.pkl
+
+# Database
+*.db
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

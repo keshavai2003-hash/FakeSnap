@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - FakeSnap</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="dash-nav">
+        <div class="dash-nav-logo">Fake<span>Snap</span></div>
+        <div class="dash-nav-links">
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </nav>
+
+    <div class="dash-container">
+
+        <!-- Welcome -->
+        <div class="dash-welcome">
+            <h2>👋 Welcome back, <span>{{ current_user.username }}</span>!</h2>
+            <p>Here's your activity summary</p>
+        </div>
+
+        <!-- Stats cards -->
+        <div class="dash-stats">
+            <div class="dash-stat-card">
+                <div class="dash-stat-icon">📰</div>
+                <div class="dash-stat-number">{{ total_checks }}</div>
+                <div class="dash-stat-label">Total Checks</div>
+            </div>
+            <div class="dash-stat-card">
+                <div class="dash-stat-icon">🚨</div>
+                <div class="dash-stat-number">{{ fake_caught }}</div>
+                <div class="dash-stat-label">Fake Caught</div>
+            </div>
+            <div class="dash-stat-card">
+                <div class="dash-stat-icon">⏳</div>
+                <div class="dash-stat-number">{{ checks_left }}/10</div>
+                <div class="dash-stat-label">Checks Left This Hour</div>
+            </div>
+        </div>
+
+        <!-- Badges -->
+        <div class="dash-section">
+            <h3>🏅 Your Badges</h3>
+            <div class="dash-badges">
+                {% if badges %}
+                    {% for badge in badges %}
+                    <div class="dash-badge earned">
+                        {% if badge.badge_name == 'Fact Checker' %}🔍{% endif %}
+                        {% if badge.badge_name == 'News Detective' %}🕵️{% endif %}
+                        {% if badge.badge_name == 'Truth Seeker' %}🏆{% endif %}
+                        {{ badge.badge_name }}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="dash-badge locked">🔒 No badges yet! Start checking news!</div>
+                {% endif %}
+
+                <!-- Show locked badges -->
+                {% set badge_names = badges | map(attribute='badge_name') | list %}
+                {% if 'Fact Checker' not in badge_names %}
+                <div class="dash-badge locked">🔍 Fact Checker — Check 10 news</div>
+                {% endif %}
+                {% if 'News Detective' not in badge_names %}
+                <div class="dash-badge locked">🕵️ News Detective — Catch 5 fake news</div>
+                {% endif %}
+                {% if 'Truth Seeker' not in badge_names %}
+                <div class="dash-badge locked">🏆 Truth Seeker — Check 50 news</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- History -->
+        <div class="dash-section">
+            <h3>📋 Recent History</h3>
+            {% if history %}
+            <div class="dash-history">
+                {% for item in history %}
+                <div class="dash-history-item">
+                    <div class="dash-history-text">{{ item.news_text[:80] }}...</div>
+                    <div class="dash-history-result {{ item.result | lower }}">{{ item.result }}</div>
+                    <div class="dash-history-time">{{ item.timestamp }}</div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="dash-empty">No history yet! Go check some news!</p>
+            {% endif %}
+        </div>
+
+    </div>
+</body>
+</html>

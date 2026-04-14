@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Setup - FakeSnap</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <h1>Fake<span>Snap</span></h1>
+                <p>🛡️ Admin Registration</p>
+            </div>
+
+            {% if error %}
+            <div class="auth-error">{{ error }}</div>
+            {% endif %}
+
+            <form method="POST">
+                <div class="auth-input-group">
+                    <input type="text" name="username" placeholder="Admin Username" required>
+                </div>
+                <div class="auth-input-group">
+                    <input type="email" name="email" placeholder="Admin Email" required>
+                </div>
+                <div class="auth-input-group password-group">
+                    <input type="password" name="password" id="password" placeholder="Password" required>
+                    <span class="eye-icon" onclick="togglePassword('password')">👁️</span>
+                </div>
+                <div class="auth-input-group password-group">
+                    <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm Password" required>
+                    <span class="eye-icon" onclick="togglePassword('confirm_password')">👁️</span>
+                </div>
+                <div class="auth-input-group">
+                    <input type="password" name="secret_code" placeholder="🔐 Secret Admin Code" required>
+                </div>
+                <button type="submit" class="auth-btn">Create Admin Account</button>
+            </form>
+
+            <div class="auth-links">
+                <a href="{{ url_for('login') }}">Back to Login</a>
+            </div>
+        </div>
+    </div>
+    <script>
+    function togglePassword(id) {
+        const input = document.getElementById(id);
+        input.type = input.type === 'password' ? 'text' : 'password';
+    }
+    </script>
+</body>
+</html>
