@@ -3,7 +3,7 @@
 ### AI-Powered Fake News Detection System
 
 FakeSnap is a web application that detects fake news using Machine Learning, NLP, and OCR.
-It supports both **text input** and **image-based news detection**.
+It supports both **text input** and **image-based news detection**, providing a complete misinformation analysis system.
 
 ---
 
@@ -11,12 +11,12 @@ It supports both **text input** and **image-based news detection**.
 
 * 📰 Fake News Detection (ML Model)
 * 🤖 AI Fact-Checking Integration
-* 📷 OCR Support (Extract text from images)
+* 📷 OCR Support (Image → Text)
 * 👤 User Authentication (Login/Register)
 * 🏆 Gamification (Badges System)
 * 📊 Dashboard & History Tracking
 * 🛡️ Admin Panel
-* ⚡ Rate Limiting System
+* ⚡ Rate Limiting
 
 ---
 
@@ -41,6 +41,8 @@ fakenews/
 ├── dataset/        # (not included in repo)
 ├── templates/
 ├── static/
+├── database.sql
+├── requirements.txt
 ├── .env
 ├── .gitignore
 ```
@@ -51,14 +53,18 @@ fakenews/
 
 ### 1. Clone Repository
 
+```
 git clone https://github.com/keshavai2003-hash/FakeSnap.git
 cd FakeSnap
+```
 
 ---
 
 ### 2. Install Dependencies
 
+```
 pip install -r requirements.txt
+```
 
 ---
 
@@ -66,54 +72,95 @@ pip install -r requirements.txt
 
 Create a `.env` file:
 
+```
 SECRET_KEY=your_secret_key
 DB_HOST=localhost
 DB_USER=root
 DB_PASSWORD=your_password
-DB_NAME=fakesnap
+DB_NAME=itt
 GROQ_API_KEY=your_api_key
+ADMIN_CODE=your_admin_code
+```
 
 ---
 
-### 4. Install Tesseract OCR
+## 🗄️ Database Setup
+
+Run the SQL file in MySQL:
+
+```
+database.sql
+```
+
+---
+
+## 🔍 OCR Setup (Tesseract)
 
 Download from:
 https://github.com/tesseract-ocr/tesseract
 
-Make sure it is added to system PATH.
+After installation, add it to your system PATH.
+
+If not detected, manually set path in `app.py`:
+
+```
+# pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+```
 
 ---
 
-### 5. Download Dataset
+## 📂 Dataset
 
-Dataset not included due to size.
+Dataset is not included due to large size.
 
 Download from:
 https://www.kaggle.com/datasets/clmentbisaillon/fake-and-real-news-dataset
 
 Place inside:
 
+```
 dataset/
-├── ISOT/
-├── IFND/
+ ├── ISOT/
+ │    ├── Fake.csv
+ │    └── True.csv
+ └── IFND/
+      └── IFND.csv
+```
 
 ---
 
-### 6. Train Model
+## 🧠 Train Model
 
+```
 python train_model.py
+```
 
 ---
 
-### 7. Run Application
+## ▶️ Run Application
 
+```
 python app.py
+```
+
+---
+
+## 👑 Admin Setup
+
+To create an admin account:
+
+1. Run the application
+2. Open:
+   http://127.0.0.1:5000/admin_setup
+3. Enter details along with the Admin Code from `.env`
+
+If the correct code is provided, the account will be created with admin privileges.
 
 ---
 
 ## 📊 Model Info
 
-* Dataset: 100,000+ news articles
+* Dataset Size: 100,000+ articles
 * Accuracy: ~95%
 * Algorithm: Logistic Regression + TF-IDF
 
@@ -123,38 +170,23 @@ python app.py
 
 * Developed complete backend using Flask
 * Built and trained Machine Learning model
-* Implemented text preprocessing and NLP pipeline
-* Integrated OCR (Tesseract) for image-based news analysis
-* Designed database structure and authentication system
+* Implemented NLP preprocessing pipeline
+* Integrated OCR (Tesseract) for image analysis
+* Designed database and authentication system
 * Implemented API routes and core logic
 
 ---
 
 ## ⚠️ Disclaimer
 
+This system provides AI-based predictions and may not be 100% accurate.
 Always verify news from trusted sources.
-
-### Install dependencies
-pip install -r requirements.txt
-
-### Download NLTK data
-For nltk (stopwords), you need  need to run once this below code :
-python -c 
-import nltk
-nltk.download('stopwords')
-
-## 👑 Admin Setup
-
-To create an admin account, go to `http://127.0.0.1:5000/admin_setup` before run app.py 
-and enter the secret admin code defined in `.env`
-Then you can become admin
-
 
 ---
 
 ## 👤 Author
 
-Keshav Sharma
+**Keshav Sharma**
 https://github.com/keshavai2003-hash
 
 ---
