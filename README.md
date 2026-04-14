@@ -134,6 +134,16 @@ python app.py
 
 Always verify news from trusted sources.
 
+### Install dependencies
+pip install -r requirements.txt
+
+### Download NLTK data
+For nltk (stopwords), you need  need to run once this below code :
+python -c 
+import nltk
+nltk.download('stopwords')
+
+
 ---
 
 ## 👤 Author
