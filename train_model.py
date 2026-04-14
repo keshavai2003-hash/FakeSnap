@@ -13,8 +13,8 @@ stop_words = set(stopwords.words('english'))
 
 # 1. ISOT
 print("Loading ISOT...")
-fake = pd.read_csv(r'F:\fakenews\dataset\ISOT\Fake.csv')
-true = pd.read_csv(r'F:\fakenews\dataset\ISOT\True.csv')
+fake = pd.read_csv('dataset/ISOT/Fake.csv')
+true = pd.read_csv('dataset/ISOT/True.csv')
 fake['label'] = 'FAKE'
 true['label'] = 'REAL'
 isot = pd.concat([fake, true], ignore_index=True)[['text', 'label']]
