@@ -21,7 +21,7 @@ isot = pd.concat([fake, true], ignore_index=True)[['text', 'label']]
 
 # 2. IFND
 print("Loading IFND...")
-ifnd = pd.read_csv(r'F:\fakenews\dataset\IFND\IFND.csv', encoding='latin-1')
+ifnd = pd.read_csv('dataset/IFND/IFND.csv', encoding='latin-1')
 ifnd = ifnd[['Statement', 'Label']]
 ifnd.columns = ['text', 'label']
 ifnd['label'] = ifnd['label'].replace({'TRUE': 'REAL', 'FALSE': 'FAKE'})
@@ -72,10 +72,10 @@ print("\nDetailed Report:")
 print(classification_report(y_test, y_pred))
 
 # SAVE
-with open(r'F:\fakenews\model\model.pkl', 'wb') as f:
+with open('model/model.pkl', 'wb') as f:
     pickle.dump(model, f)
 
-with open(r'F:\fakenews\model\tfidf.pkl', 'wb') as f:
+with open('model/tfidf.pkl', 'wb') as f:
     pickle.dump(tfidf, f)
 
 print("\nModel saved successfully!")
