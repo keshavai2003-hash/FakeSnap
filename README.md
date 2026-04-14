@@ -105,6 +105,7 @@ If not detected, manually set path in `app.py`:
 
 ```
 # pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+also shown in code 
 ```
 
 ---
