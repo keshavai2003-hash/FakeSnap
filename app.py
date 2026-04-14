@@ -38,10 +38,10 @@ lm = LoginManager(app)
 lm.login_view = 'login'
 
 # load trained model
-with open(r'F:\fakenews\model\model.pkl', 'rb') as f:
+with open('model/model.pkl', 'rb') as f:
     model = pickle.load(f)
 
-with open(r'F:\fakenews\model\tfidf.pkl', 'rb') as f:
+with open('model/tfidf.pkl', 'rb') as f:
     tfidf = pickle.load(f)
 
 # stopwords
