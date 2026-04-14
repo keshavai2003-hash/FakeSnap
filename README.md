@@ -143,6 +143,12 @@ python -c
 import nltk
 nltk.download('stopwords')
 
+## 👑 Admin Setup
+
+To create an admin account, go to `http://127.0.0.1:5000/admin_setup` before run app.py 
+and enter the secret admin code defined in `.env`
+Then you can become admin
+
 
 ---
 
